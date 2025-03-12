@@ -17,7 +17,7 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN go build -o frameapi
+RUN go build -o frame ./cmd/api
 
 # Runtime stage
 FROM alpine:latest
@@ -33,7 +33,7 @@ RUN adduser -D -g '' appuser
 WORKDIR /app
 
 # Copy the binary from builder stage
-COPY --from=builder /app/frameapi .
+COPY --from=builder /app/frame .
 
 # Use non-root user for security
 USER appuser
@@ -42,4 +42,4 @@ USER appuser
 EXPOSE 8080
 
 # Run the application
-CMD ["/app/frameapi"]
+CMD ["/app/frame"]

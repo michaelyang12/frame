@@ -1,4 +1,4 @@
-module github.com/michaelyang12/frameApi
+module github.com/michaelyang12/frame
 
 go 1.23.6
 
