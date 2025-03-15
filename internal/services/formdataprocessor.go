@@ -35,9 +35,8 @@ func GetImageBufferFromFormData(w http.ResponseWriter, r *http.Request) (*bytes.
 
 	//If cannot get MIME type, use file extensions
 	if contentType == "application/octet-stream" {
-		ext := filepath.Ext(header.Filename)
-		filetype := strings.TrimPrefix(ext, ".")
-		imageType, err := imgutil.GetImageType(filetype)
+		ext := strings.TrimPrefix(filepath.Ext(header.Filename), ".")
+		imageType, err := imgutil.GetImageType(ext)
 		if err != nil {
 			return nil, "", "", fmt.Errorf("Failed to get image type: %w", err)
 		}
@@ -49,7 +48,7 @@ func GetImageBufferFromFormData(w http.ResponseWriter, r *http.Request) (*bytes.
 		return nil, "", "", fmt.Errorf("Failed to reset file: %w", err)
 	}
 
-	log.Printf("Converting file: %s, size: %d bytes, type: %s", header.Filename, header.Size, contentType)
+	log.Printf("Processing file: %s, size: %d bytes, type: %s", header.Filename, header.Size, contentType)
 
 	// Read file into buffer
 	buffer := new(bytes.Buffer)

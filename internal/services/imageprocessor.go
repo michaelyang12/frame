@@ -3,11 +3,13 @@ package services
 import (
 	"bytes"
 	"fmt"
+	"image/jpeg"
 	"log"
 	"time"
 
 	"github.com/h2non/bimg"
 
+	"github.com/gen2brain/heic"
 	"github.com/michaelyang12/frame/internal/models"
 	"github.com/michaelyang12/frame/pkg/imgutil"
 )
@@ -48,7 +50,11 @@ func (p *ImageProcessor) Resize(imageBytes []byte, width, height int, format str
 func (p *ImageProcessor) Convert(imageBuffer *bytes.Buffer, inputContentType string, outputFormat string, quality int) ([]byte, string, models.ImageInfo, error) {
 	// imageBytes := buffer.Bytes()
 	if inputContentType == "image/heic" || inputContentType == "image/heif" {
-		log.Printf("HEIC file detected \n")
+		log.Printf("MIME type is: %s, converting buffer to jpeg first...", inputContentType)
+		err := convertHeicToJpeg(imageBuffer)
+		if err != nil {
+			return nil, "", models.ImageInfo{}, err
+		}
 	}
 
 	imageType, err := imgutil.GetImageType(outputFormat)
@@ -61,6 +67,7 @@ func (p *ImageProcessor) Convert(imageBuffer *bytes.Buffer, inputContentType str
 		Quality: quality,
 	}
 
+	log.Printf("Converting to type: %s, quality: %s", outputFormat, quality)
 	newImage, err := bimg.NewImage(imageBuffer.Bytes()).Process(options)
 	if err != nil {
 		return nil, "", models.ImageInfo{}, fmt.Errorf("Error processing image: %w", err)
@@ -82,19 +89,19 @@ func getImageMetadata(img []byte, outputFormat string) models.ImageInfo {
 	}
 }
 
-// func ConvertHEICToJPEG(heicBuffer *bytes.Buffer) (*bytes.Buffer, error) {
-// 	// Decode HEIC
-// 	img, err := heif.Decode(heicBuffer)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("failed to decode HEIC: %w", err)
-// 	}
+func convertHeicToJpeg(heicBuffer *bytes.Buffer) error {
+	// Decode HEIC
+	img, err := heic.Decode(heicBuffer)
+	if err != nil {
+		return fmt.Errorf("failed to decode HEIC: %w", err)
+	}
 
-// 	// Convert to JPEG
-// 	jpegBuffer := new(bytes.Buffer)
-// 	err = jpeg.Encode(jpegBuffer, img, nil)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("failed to encode JPEG: %w", err)
-// 	}
+	// Convert to JPEG
+	// heicBuffer = new(bytes.Buffer)
+	err = jpeg.Encode(heicBuffer, img, nil)
+	if err != nil {
+		return fmt.Errorf("failed to encode JPEG: %w", err)
+	}
 
-// 	return jpegBuffer, nil
-// }
+	return nil
+}

@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    environment:
+      # Add environment variables your application needs
+      - GO_ENV=production
+      # - DATABASE_URL=postgres://user:password@db:5432/dbname
+    # volumes:
+      # Optional: Mount configuration files if needed
+      # - ./config:/app/config
+      # Optional: Mount storage directory for persistent data
+      # - ./data:/app/data
+
+  # Uncomment if you need a database
+  # db:
+  #   image: postgres:14-alpine
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   environment:
+  #     - POSTGRES_PASSWORD=yourpassword
+  #     - POSTGRES_USER=youruser
+  #     - POSTGRES_DB=yourdb
+  #   ports:
+  #     - "5432:5432"
+
+# Uncomment if using databases or other services that need volumes
+# volumes:
+#   postgres_data:
