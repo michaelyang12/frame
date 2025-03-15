@@ -9,5 +9,6 @@ require (
 
 require (
 	github.com/ebitengine/purego v0.8.2 // indirect
+	github.com/rs/cors v1.11.1
 	github.com/tetratelabs/wazero v1.9.0 // indirect
 )

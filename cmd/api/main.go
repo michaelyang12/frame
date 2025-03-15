@@ -7,7 +7,26 @@ import (
 
 	"github.com/michaelyang12/frame/internal/handlers"
 	"github.com/michaelyang12/frame/internal/middleware"
+	"github.com/rs/cors"
 )
+
+func enableCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Set CORS headers
+		w.Header().Set("Access-Control-Allow-Origin", "*") // Allow all origins (more restrictive: specific domain)
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		// Handle preflight OPTIONS requests
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		// Pass to next handler
+		next.ServeHTTP(w, r)
+	})
+}
 
 func main() {
 	// Set up server with timeouts
@@ -33,5 +52,15 @@ func setupRoutes() http.Handler {
 	mux.HandleFunc("/health", handlers.HandleHealth)
 
 	// Apply middleware
-	return middleware.Logging(mux)
+	handler := middleware.Logging(mux)
+
+	// Apply CORS middleware
+	corsMiddleware := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization"},
+		AllowCredentials: true,
+	})
+
+	return corsMiddleware.Handler(handler)
 }
