@@ -78,6 +78,26 @@ func (p *ImageProcessor) Convert(imageBuffer *bytes.Buffer, inputContentType str
 	return newImage, contentType, metadata, nil
 }
 
+func (p *ImageProcessor) RemoveBackground(imageBuffer *bytes.Buffer, outputFormat string) ([]byte, string, error) {
+	// Apply format conversion if specified
+	imageType, err := imgutil.GetImageType(outputFormat)
+	if err != nil {
+		return nil, "", fmt.Errorf("Errog etting image type: %w", err)
+	}
+
+	// options := bimg.Options{
+	// 	Type: imageType,
+	// }
+
+	// Trim the image
+	newImage, err := bimg.NewImage(imageBuffer.Bytes()).Trim()
+	if err != nil {
+		return nil, "", fmt.Errorf("Error trimming photo: %w", err)
+	}
+	contentType := imgutil.GetContentType(imageType)
+	return newImage, contentType, nil
+}
+
 func getImageMetadata(img []byte, outputFormat string) models.ImageInfo {
 	info, _ := bimg.NewImage(img).Size()
 	return models.ImageInfo{

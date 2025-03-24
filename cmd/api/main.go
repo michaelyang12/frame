@@ -49,6 +49,7 @@ func setupRoutes() http.Handler {
 	mux.HandleFunc("/", handlers.HandleRoot)
 	mux.HandleFunc("/resize", handlers.HandleResize)
 	mux.HandleFunc("/convert", handlers.HandleConvert)
+	mux.HandleFunc("/trim", handlers.HandleTrim)
 	mux.HandleFunc("/health", handlers.HandleHealth)
 
 	// Apply middleware

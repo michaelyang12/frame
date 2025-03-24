@@ -118,3 +118,30 @@ func HandleConvert(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "public, max-age=86400")
 	w.Write(newImage)
 }
+
+func HandleTrim(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Parse form data and get file
+	buffer, _, outputFormat, err := services.GetImageBufferFromFormData(w, r)
+	if err != nil {
+		http.Error(w, "Failed to get image from form data: "+err.Error(), http.StatusInternalServerError)
+	}
+
+	// Process the image
+	processor := services.NewImageProcessor()
+	newImage, contentType, err := processor.RemoveBackground(buffer, outputFormat)
+	if err != nil {
+		http.Error(w, "Failed to remove background from image: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Set headers and write response
+	w.Header().Set("Content-Type", contentType)
+	w.Header().Set("Content-Length", strconv.Itoa(len(newImage)))
+	w.Header().Set("Cache-Control", "public, max-age=86400")
+	w.Write(newImage)
+}
