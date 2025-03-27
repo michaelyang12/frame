@@ -33,7 +33,7 @@ func main() {
 	port := 5050
 	// Set up server with timeouts
 	server := &http.Server{
-		Addr:         fmt.Sprintf("0.0.0.0:%s", port),
+		Addr:         fmt.Sprintf("0.0.0.0:%d", port),
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 30 * time.Second,
 		IdleTimeout:  120 * time.Second,
@@ -41,7 +41,7 @@ func main() {
 	}
 
 	// Start server
-	log.Println("Image Processing API running on port %s", port)
+	log.Printf("Image Processing API running on port %d\n", port)
 	log.Fatal(server.ListenAndServe())
 }
 

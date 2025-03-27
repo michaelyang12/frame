@@ -20,7 +20,7 @@ func HandleRoot(w http.ResponseWriter, r *http.Request) {
 		Message: "Image Processing API is running",
 		Data: map[string]string{
 			"version":   "1.0.0",
-			"endpoints": "/resize, /convert, /health",
+			"endpoints": "/resize, /convert, /health, /trim (WIP)",
 		},
 	}
 
