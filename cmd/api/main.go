@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -29,9 +30,10 @@ func enableCORS(next http.Handler) http.Handler {
 }
 
 func main() {
+	port := 5050
 	// Set up server with timeouts
 	server := &http.Server{
-		Addr:         "0.0.0.0:8080",
+		Addr:         fmt.Sprintf("0.0.0.0:%s", port),
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 30 * time.Second,
 		IdleTimeout:  120 * time.Second,
