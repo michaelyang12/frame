@@ -41,7 +41,7 @@ func main() {
 	}
 
 	// Start server
-	log.Println("Image Processing API running on port 8080")
+	log.Println("Image Processing API running on port %s", port)
 	log.Fatal(server.ListenAndServe())
 }
 
