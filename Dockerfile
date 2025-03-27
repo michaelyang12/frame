@@ -39,7 +39,7 @@ COPY --from=builder /app/frame .
 USER appuser
 
 # Expose the API port
-EXPOSE 8080
+EXPOSE 5050
 
 # Run the application
 CMD ["/app/frame"]

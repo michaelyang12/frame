@@ -44,6 +44,7 @@ func (p *ImageProcessor) Resize(imageBytes []byte, width, height int, format str
 
 	// Determine content type
 	contentType := imgutil.GetContentType(options.Type)
+	log.Println("LOG Content type %s", contentType)
 	return newImage, contentType, metadata, nil
 }
 
@@ -80,20 +81,19 @@ func (p *ImageProcessor) Convert(imageBuffer *bytes.Buffer, inputContentType str
 
 func (p *ImageProcessor) RemoveBackground(imageBuffer *bytes.Buffer, outputFormat string) ([]byte, string, error) {
 	// Apply format conversion if specified
+	// Apply format conversion if specified
+
 	imageType, err := imgutil.GetImageType(outputFormat)
 	if err != nil {
-		return nil, "", fmt.Errorf("Errog etting image type: %w", err)
+		return nil, "", fmt.Errorf("Error getting image type: %w", err)
 	}
 
-	// options := bimg.Options{
-	// 	Type: imageType,
-	// }
-
-	// Trim the image
+	// Process the image
 	newImage, err := bimg.NewImage(imageBuffer.Bytes()).Trim()
 	if err != nil {
 		return nil, "", fmt.Errorf("Error trimming photo: %w", err)
 	}
+
 	contentType := imgutil.GetContentType(imageType)
 	return newImage, contentType, nil
 }

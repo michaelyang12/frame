@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -17,6 +18,7 @@ func HandleResize(w http.ResponseWriter, r *http.Request) {
 
 	// Parse form data and get file
 	buffer, _, outputFormat, err := services.GetImageBufferFromFormData(w, r)
+	log.Println(outputFormat)
 	if err != nil {
 		http.Error(w, "Failed to get image from form data: "+err.Error(), http.StatusInternalServerError)
 	}
